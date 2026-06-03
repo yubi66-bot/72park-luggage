@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>72 Park · Luggage Storage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Variables ──────────────────────────────────────────── */
+    :root {
+      --bg:           #07111d;
+      --bg-surface:   #0c1e33;
+      --bg-deep:      #050e19;
+      --bg-input:     #091828;
+      --gold:         #c9a96e;
+      --gold-light:   #e8cfa0;
+      --gold-glow:    rgba(201,169,110,.14);
+      --gold-border:  rgba(201,169,110,.18);
+      --emerald:      #2ee8a0;
+      --emerald-bg:   rgba(46,232,160,.08);
+      --coral:        #ff6b5b;
+      --coral-bg:     rgba(255,107,91,.09);
+      --amber:        #ffb340;
+      --amber-bg:     rgba(255,179,64,.08);
+      --lavender:     #a78bfa;
+      --lavender-bg:  rgba(167,139,250,.1);
+      --text:         #cde0f5;
+      --text-muted:   #5e7a9a;
+      --text-dim:     #2d4560;
+      --border:       rgba(201,169,110,.1);
+      --border-focus: rgba(201,169,110,.45);
+      --radius:       12px;
+    }
+
+    /* ── Reset ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Scrollbar ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(201,169,110,.3); }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      position: relative;
+      background: linear-gradient(160deg, #050e19 0%, #091828 55%, #07111d 100%);
+      padding: 20px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+      z-index: 10;
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(45deg,  rgba(201,169,110,.04) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(201,169,110,.04) 25%, transparent 25%),
+        linear-gradient(45deg,  transparent 75%, rgba(201,169,110,.04) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(201,169,110,.04) 75%);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%, transparent 100%);
+    }
+
+    /* ── Logo ───────────────────────────────────────────────── */
+    .logo { display: flex; align-items: center; gap: 20px; position: relative; z-index: 1; }
+    .logo-mark { display: flex; align-items: center; gap: 11px; }
+    .logo-72 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem; color: var(--gold); line-height: 1; letter-spacing: 3px;
+      text-shadow: 0 0 40px rgba(201,169,110,.35), 0 0 80px rgba(201,169,110,.1);
+    }
+    .logo-words { display: flex; flex-direction: column; gap: 2px; padding-top: 2px; }
+    .logo-park { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--text); letter-spacing: 8px; line-height: 1; }
+    .logo-city { font-family: 'DM Sans', sans-serif; font-size: .56rem; color: var(--gold); letter-spacing: 4px; text-transform: uppercase; opacity: .75; }
+    .logo-sep { width: 1px; height: 38px; background: linear-gradient(to bottom, transparent, var(--gold-border), transparent); }
+    .logo-dept { font-family: 'DM Sans', sans-serif; font-size: .65rem; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; }
+
+    /* ── Clock ──────────────────────────────────────────────── */
+    .clock-area { text-align: right; position: relative; z-index: 1; }
+    #time-display { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 3px; line-height: 1; text-shadow: 0 0 20px rgba(201,169,110,.25); }
+    #date-display { font-size: .7rem; color: var(--text-muted); letter-spacing: 1.5px; margin-top: 3px; text-transform: uppercase; }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+    }
+    .nav-tabs { display: flex; }
+    nav button {
+      background: none; border: none;
+      padding: 13px 22px;
+      font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 500;
+      cursor: pointer; color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      letter-spacing: 2px; text-transform: uppercase;
+      transition: color .2s, border-color .2s;
+      margin-bottom: -1px;
+    }
+    nav button.active { color: var(--gold-light); border-bottom-color: var(--gold); }
+    nav button:hover:not(.active) { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 2px; }
+    .nav-tool {
+      background: none; border: none;
+      padding: 7px 11px;
+      font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 500;
+      cursor: pointer; color: var(--text-muted);
+      letter-spacing: 1px; text-transform: uppercase;
+      border-radius: 6px;
+      transition: color .15s, background .15s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .nav-tool:hover { color: var(--text); background: rgba(255,255,255,.05); }
+    .nav-tool-icon { font-size: .9rem; }
+
+    /* ── Main ───────────────────────────────────────────────── */
+    main { padding: 30px 36px; max-width: 1480px; margin: 0 auto; }
+
+    /* ── Summary cards ──────────────────────────────────────── */
+    .summary { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+    .summary-card {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 26px;
+      flex: 1; min-width: 140px; text-align: center;
+      position: relative; overflow: hidden;
+      transition: border-color .2s, transform .15s;
+    }
+    .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .summary-card.s-available::before { background: linear-gradient(90deg, transparent, var(--emerald), transparent); }
+    .summary-card.s-occupied::before  { background: linear-gradient(90deg, transparent, var(--coral),   transparent); }
+    .summary-card.s-attention::before { background: linear-gradient(90deg, transparent, var(--amber),   transparent); }
+    .summary-card:hover { border-color: var(--gold-border); transform: translateY(-2px); }
+    .summary-card .number { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; line-height: 1; letter-spacing: 2px; }
+    .num-available { color: var(--emerald); text-shadow: 0 0 20px rgba(46,232,160,.3); }
+    .num-occupied  { color: var(--coral);   text-shadow: 0 0 20px rgba(255,107,91,.3); }
+    .num-attention { color: var(--amber);   text-shadow: 0 0 20px rgba(255,179,64,.3); }
+    .summary-card .label { font-size: .63rem; color: var(--text-muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 2.5px; }
+
+    /* ── Filter bar ─────────────────────────────────────────── */
+    .filter-bar { display: flex; gap: 7px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .filter-label { font-size: .65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-right: 4px; }
+    .filter-btn {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 99px; padding: 5px 13px;
+      font-family: 'DM Sans', sans-serif; font-size: .74rem; font-weight: 500;
+      cursor: pointer; color: var(--text-muted);
+      letter-spacing: .3px; display: flex; align-items: center; gap: 6px;
+      transition: all .15s;
+    }
+    .filter-btn:hover { border-color: var(--gold-border); color: var(--text); }
+    .filter-btn.active { background: var(--gold-glow); border-color: rgba(201,169,110,.35); color: var(--gold-light); }
+    .f-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .filter-btn[data-f="all"]       .f-dot { background: var(--gold); }
+    .filter-btn[data-f="available"] .f-dot { background: var(--emerald); }
+    .filter-btn[data-f="occupied"]  .f-dot { background: var(--coral); }
+    .filter-btn[data-f="attention"] .f-dot { background: var(--amber); }
+    .f-count { font-size: .68rem; opacity: .6; }
+
+    /* ── Search ─────────────────────────────────────────────── */
+    .search-wrap { margin-bottom: 22px; position: relative; display: inline-flex; align-items: center; width: 100%; max-width: 460px; }
+    .search-icon-el { position: absolute; left: 14px; color: var(--text-dim); font-size: .95rem; pointer-events: none; }
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 56px 10px 40px;
+      font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--text);
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .search-wrap input::placeholder { color: var(--text-dim); }
+    .search-wrap input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .search-clear { position: absolute; right: 12px; background: none; border: none; color: var(--text-dim); font-size: 1.1rem; cursor: pointer; line-height: 1; padding: 3px 5px; border-radius: 4px; transition: color .15s; }
+    .search-clear:hover { color: var(--text-muted); }
+    .kbd-hint { position: absolute; right: 36px; font-size: .65rem; color: var(--text-dim); letter-spacing: .5px; pointer-events: none; }
+    kbd { background: rgba(255,255,255,.06); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-family: 'DM Sans', sans-serif; font-size: .65rem; color: var(--text-dim); }
+    .search-no-results { grid-column: 1/-1; text-align: center; padding: 56px 0; color: var(--text-muted); font-size: .9rem; }
+
+    /* ── Locker grid ────────────────────────────────────────── */
+    .locker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(188px, 1fr)); gap: 12px; }
+
+    /* ── Locker card ────────────────────────────────────────── */
+    @keyframes cardReveal {
+      from { opacity: 0; transform: translateY(14px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+    .locker-card {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 15px 14px 13px;
+      display: flex; flex-direction: column; gap: 9px;
+      position: relative; overflow: hidden;
+      animation: cardReveal .4s cubic-bezier(.22,.68,0,1.2) both;
+      transition: border-color .2s, transform .18s, box-shadow .2s;
+    }
+    .locker-card::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+    }
+    .locker-card.available::before { background: linear-gradient(to bottom, var(--emerald), rgba(46,232,160,.3)); }
+    .locker-card.occupied::before  { background: linear-gradient(to bottom, var(--coral),   rgba(255,107,91,.3)); }
+    .locker-card.attention::before { background: linear-gradient(to bottom, var(--amber),   rgba(255,179,64,.3)); }
+    .locker-card:hover { border-color: rgba(201,169,110,.28); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.4); }
+    .locker-card.long-stay { border-color: rgba(255,107,91,.22) !important; }
+
+    .card-top { display: flex; align-items: center; justify-content: space-between; }
+    .locker-number { font-family: 'Bebas Neue', sans-serif; font-size: 1.85rem; color: var(--text); letter-spacing: 2px; line-height: 1; }
+
+    /* ── Badges ─────────────────────────────────────────────── */
+    .locker-status { font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; text-transform: uppercase; letter-spacing: 1px; }
+    .badge-available { background: var(--emerald-bg); color: var(--emerald); }
+    .badge-occupied  { background: var(--coral-bg);   color: var(--coral); }
+    .badge-attention { background: var(--amber-bg);   color: var(--amber); }
+
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+    .long-stay-badge {
+      display: inline-block;
+      background: rgba(255,107,91,.12); color: var(--coral);
+      font-size: .62rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 99px;
+      text-transform: uppercase; letter-spacing: .7px;
+      animation: pulse 2.2s ease-in-out infinite;
+      margin-top: 3px;
+    }
+
+    /* ── Guest info ─────────────────────────────────────────── */
+    .locker-guest { font-size: .8rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
+    .locker-guest strong { display: block; font-size: .9rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .lock-id-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--lavender-bg); color: var(--lavender);
+      font-size: .67rem; font-weight: 600; padding: 2px 8px; border-radius: 99px;
+      margin-top: 4px; letter-spacing: .4px;
+    }
+    .notes-text { font-size: .76rem; color: var(--text-muted); font-style: italic; display: block; margin-top: 3px; }
+    .since-label { display: block; font-size: .68rem; color: var(--text-dim); margin-top: 4px; }
+    .elapsed-timer { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 9px; border-radius: 99px; margin-top: 5px; letter-spacing: .4px; }
+    .elapsed-ok      { background: rgba(46,232,160,.1);  color: var(--emerald); }
+    .elapsed-warning { background: rgba(255,179,64,.1);  color: var(--amber); }
+    .elapsed-danger  { background: rgba(255,107,91,.12); color: var(--coral); }
+
+    /* ── Card actions ───────────────────────────────────────── */
+    .locker-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+
+    /* ── Buttons ────────────────────────────────────────────── */
+    .btn {
+      border: none; border-radius: 7px; padding: 7px 14px;
+      font-family: 'DM Sans', sans-serif; font-size: .77rem; font-weight: 600;
+      letter-spacing: .5px; cursor: pointer;
+      transition: opacity .15s, transform .1s, box-shadow .15s;
+    }
+    .btn:hover  { opacity: .88; }
+    .btn:active { transform: scale(.96); }
+    .btn-primary   { background: linear-gradient(135deg, var(--gold) 0%, #d4b278 100%); color: #07111d; box-shadow: 0 2px 10px rgba(201,169,110,.2); }
+    .btn-primary:hover { box-shadow: 0 4px 16px rgba(201,169,110,.35); }
+    .btn-danger    { background: var(--coral); color: #fff; }
+    .btn-warning   { background: var(--amber); color: #07111d; }
+    .btn-secondary { background: rgba(255,255,255,.05); color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--gold-border); color: var(--text); }
+    .btn-ghost { background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--text-muted); font-size: .85rem; padding: 5px 9px; }
+    .btn-ghost:hover { background: rgba(255,255,255,.08); border-color: var(--gold-border); color: var(--gold-light); }
+
+    /* ── History ────────────────────────────────────────────── */
+    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .history-item {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px;
+      display: flex; align-items: flex-start; gap: 14px;
+      transition: border-color .2s;
+    }
+    .history-item:hover { border-color: var(--gold-border); }
+    .history-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .95rem; flex-shrink: 0; }
+    .icon-assigned  { background: rgba(46,232,160,.1); }
+    .icon-released  { background: rgba(96,165,250,.1); }
+    .icon-attention { background: rgba(255,179,64,.1); }
+    .history-body { flex: 1; }
+    .history-body strong { font-size: .88rem; color: var(--text); }
+    .history-body p { font-size: .79rem; color: var(--text-muted); margin-top: 2px; }
+    .history-time { font-size: .7rem; color: var(--text-dim); white-space: nowrap; margin-top: 3px; }
+    .history-empty { text-align: center; padding: 56px 0; color: var(--text-dim); font-size: .9rem; }
+
+    /* ── Modal ──────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(4,10,20,.75);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 100; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(18px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+    .modal {
+      background: var(--bg-surface);
+      border: 1px solid rgba(201,169,110,.22); border-radius: 16px;
+      padding: 30px 30px 26px; width: 100%; max-width: 490px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(201,169,110,.06);
+      position: relative;
+      animation: modalSlide .22s cubic-bezier(.22,.68,0,1.1) both;
+    }
+    .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--text); margin-bottom: 22px; letter-spacing: .3px; }
+    .modal h2 .h-accent { color: var(--gold); }
+    .modal-close { position: absolute; top: 18px; right: 20px; background: none; border: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; cursor: pointer; color: var(--text-dim); border-radius: 6px; transition: color .15s, background .15s; }
+    .modal-close:hover { color: var(--text-muted); background: rgba(255,255,255,.05); }
+
+    /* ── Guest box in modal ─────────────────────────────────── */
+    .guest-box { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 18px; font-size: .85rem; color: var(--text-muted); line-height: 1.7; }
+    .guest-box strong { color: var(--text); font-size: .95rem; }
+
+    /* ── Confirm warning ────────────────────────────────────── */
+    .confirm-warning { background: rgba(255,107,91,.07); border: 1px solid rgba(255,107,91,.2); border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; }
+    .warn-title { font-weight: 700; font-size: .8rem; color: var(--coral); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
+    .confirm-warning p { font-size: .84rem; color: rgba(255,150,140,.85); line-height: 1.65; }
+    .confirm-warning p strong { color: var(--text); font-weight: 600; }
+
+    /* ── Form ───────────────────────────────────────────────── */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: .68rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--text);
+      outline: none; transition: border-color .2s, box-shadow .2s; resize: none;
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .form-group select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235e7a9a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; }
+    option { background: #0c1e33; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    .form-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
+    .error-msg { color: var(--coral); font-size: .77rem; margin-top: 8px; letter-spacing: .2px; }
+    .optional-label { font-weight: 400; opacity: .55; font-size: .68rem; letter-spacing: 0; text-transform: none; }
+
+    /* ── Shortcuts modal ────────────────────────────────────── */
+    .shortcut-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .shortcut-row:last-child { border-bottom: none; }
+    .shortcut-desc { font-size: .85rem; color: var(--text-muted); }
+    .shortcut-key { display: flex; gap: 4px; }
+
+    /* ── Password screen ────────────────────────────────────── */
+    #lock-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg-deep);
+      display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;
+    }
+    #lock-screen .lock-logo { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--gold); letter-spacing: 4px; text-shadow: 0 0 40px rgba(201,169,110,.35); }
+    #lock-screen .lock-sub  { font-size: .7rem; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-top: -14px; }
+    #lock-screen input {
+      background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 20px; font-family: 'DM Sans', sans-serif; font-size: 1.2rem;
+      color: var(--text); outline: none; text-align: center; letter-spacing: 6px; width: 220px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #lock-screen input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--gold-glow); }
+    #lock-screen .lock-error { color: var(--coral); font-size: .8rem; letter-spacing: 1px; min-height: 18px; }
+
+    /* ── Stats ──────────────────────────────────────────────── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .stat-card {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 22px;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .stat-label { font-size: .63rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--gold); line-height: 1; letter-spacing: 2px; }
+    .stat-sub   { font-size: .75rem; color: var(--text-muted); margin-top: 6px; }
+    .stat-list  { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .stat-row   { display: flex; justify-content: space-between; font-size: .8rem; color: var(--text-muted); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row strong { color: var(--text); }
+
+    /* ── Utilities ──────────────────────────────────────────── */
+    [hidden] { display: none !important; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      header { padding: 14px 18px; }
+      nav    { padding: 0 18px; }
+      main   { padding: 18px; }
+      .logo-sep, .logo-dept { display: none; }
+      .logo-72 { font-size: 2.3rem; }
+      .form-row { flex-direction: column; gap: 0; }
+      .search-wrap { max-width: 100%; }
+      .nav-tool span:not(.nav-tool-icon) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOCK SCREEN ══════════════════════════════════════════════════ -->
+<div id="lock-screen">
+  <div class="lock-logo">72</div>
+  <div class="lock-sub">Luggage Storage · Staff Only</div>
+  <input type="password" id="lock-input" placeholder="••••" maxlength="10"
+    oninput="checkPassword()" onkeydown="if(event.key==='Enter')checkPassword(true)" autofocus />
+  <div class="lock-error" id="lock-error"></div>
+</div>
+
+<!-- ══ HEADER ═══════════════════════════════════════════════════════ -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <span class="logo-72">72</span>
+      <div class="logo-words">
+        <span class="logo-park">PARK</span>
+        <span class="logo-city">Miami Beach</span>
+      </div>
+    </div>
+    <div class="logo-sep"></div>
+    <span class="logo-dept">Luggage Storage</span>
+  </div>
+  <div class="clock-area">
+    <div id="time-display">00:00:00</div>
+    <div id="date-display"></div>
+  </div>
+</header>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-tabs">
+    <button class="active" onclick="showTab('lockers')">Lockers</button>
+    <button onclick="showTab('history')">History</button>
+    <button onclick="showTab('stats')">Stats</button>
+  </div>
+  <div class="nav-right">
+    <button class="nav-tool" onclick="exportCSV()">
+      <span class="nav-tool-icon">⬇</span><span>Export CSV</span>
+    </button>
+    <button class="nav-tool" id="btn-fullscreen" onclick="toggleFullscreen()">
+      <span class="nav-tool-icon" id="fs-icon">⛶</span><span>Fullscreen</span>
+    </button>
+    <button class="nav-tool" onclick="openModal('shortcuts')" title="Keyboard shortcuts">
+      <span class="nav-tool-icon">⌨</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ MAIN ═════════════════════════════════════════════════════════ -->
+<div id="db-status" style="background:#0c1e33;color:#5e7a9a;font-size:.72rem;letter-spacing:1px;padding:5px 36px;border-bottom:1px solid rgba(201,169,110,.1)">Connecting to database…</div>
+<main>
+
+  <!-- LOCKERS TAB -->
+  <div id="tab-lockers">
+    <div class="summary">
+      <div class="summary-card s-available">
+        <div class="number num-available" id="count-available">0</div>
+        <div class="label">Available</div>
+      </div>
+      <div class="summary-card s-occupied">
+        <div class="number num-occupied" id="count-occupied">0</div>
+        <div class="label">Occupied</div>
+      </div>
+      <div class="summary-card s-attention">
+        <div class="number num-attention" id="count-attention">0</div>
+        <div class="label">Needs Attention</div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="filter-btn active" data-f="all"       onclick="setFilter('all')">       <span class="f-dot"></span>All       <span class="f-count">0</span></button>
+      <button class="filter-btn"        data-f="available" onclick="setFilter('available')"> <span class="f-dot"></span>Available <span class="f-count">0</span></button>
+      <button class="filter-btn"        data-f="occupied"  onclick="setFilter('occupied')">  <span class="f-dot"></span>Occupied  <span class="f-count">0</span></button>
+      <button class="filter-btn"        data-f="attention" onclick="setFilter('attention')"> <span class="f-dot"></span>Attention <span class="f-count">0</span></button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <span class="search-icon-el">&#128269;</span>
+      <input type="text" id="search-input" placeholder="Search by name, room, or phone…" oninput="renderLockers()" />
+      <span class="kbd-hint" id="search-hint"><kbd>/</kbd></span>
+      <button class="search-clear" id="search-clear-btn" onclick="clearSearch()" hidden>&times;</button>
+    </div>
+
+    <div class="locker-grid" id="locker-grid"></div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div id="tab-history" hidden>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <!-- STATS TAB -->
+  <div id="tab-stats" hidden>
+    <div class="stats-grid" id="stats-grid"></div>
+  </div>
+
+</main>
+
+<!-- ══ ASSIGN MODAL ═════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-assign">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('assign')">&times;</button>
+    <h2>Assign Locker <span class="h-accent" id="assign-locker-label"></span></h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Guest Name *</label>
+        <input type="text" id="field-name" placeholder="Jane Smith" />
+      </div>
+      <div class="form-group">
+        <label>Room No. *</label>
+        <input type="text" id="field-room" placeholder="204" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="field-phone" placeholder="+1 305 000 0000" />
+      </div>
+      <div class="form-group">
+        <label>No. of Bags *</label>
+        <input type="number" id="field-bags" min="1" max="30" placeholder="2" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Lock ID / Key Number *</label>
+      <input type="text" id="field-lockid" placeholder="e.g. A-04" />
+    </div>
+    <div class="form-group">
+      <label>Notes <span class="optional-label">(optional — fragile, VIP, pickup time…)</span></label>
+      <input type="text" id="field-notes" placeholder="e.g. Fragile items, pickup at 3pm" />
+    </div>
+    <datalist id="employees-list">
+      <option>Patricia Pellot</option>
+      <option>Marc Madrid</option>
+      <option>Jonathan Jones</option>
+      <option>Carlos Bardales</option>
+      <option>Thomas Disla</option>
+      <option>Levert Richardson Jr.</option>
+      <option>Skyler Kyd</option>
+      <option>Leonardo Riveron</option>
+    </datalist>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Received by <span class="optional-label">(front desk)</span></label>
+        <input type="text" id="field-received-by" list="employees-list" placeholder="Select or type name" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Delivered to locker by</label>
+        <input type="text" id="field-delivered-by" list="employees-list" placeholder="Select or type name" autocomplete="off" />
+      </div>
+    </div>
+    <div class="error-msg" id="assign-error"></div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('assign')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAssign()">Assign Locker</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RELEASE MODAL ════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-release">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('release')">&times;</button>
+    <h2>Release Locker <span class="h-accent" id="release-locker-label"></span></h2>
+    <div id="release-step1">
+      <div class="guest-box" id="release-guest-info"></div>
+      <div class="form-group">
+        <label>After releasing, mark locker as:</label>
+        <select id="release-next-status">
+          <option value="available">Available (ready to use)</option>
+          <option value="attention">Needs Attention (cleaning / inspection)</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="closeModal('release')">Cancel</button>
+        <button class="btn btn-danger" onclick="showReleaseConfirm()">Release…</button>
+      </div>
+    </div>
+    <div id="release-step2" hidden>
+      <div class="confirm-warning">
+        <div class="warn-title">Confirm Release</div>
+        <p id="release-confirm-text"></p>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="hideReleaseConfirm()">Go Back</button>
+        <button class="btn btn-danger" onclick="confirmRelease()">Yes, Release</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLEAR MODAL ══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-clear">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('clear')">&times;</button>
+    <h2>Clear Locker <span class="h-accent" id="clear-locker-label"></span></h2>
+    <div id="clear-step1">
+      <p style="font-size:.87rem;color:var(--text-muted);margin-bottom:20px;line-height:1.65">Mark this locker as available after inspection or cleaning.</p>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="closeModal('clear')">Cancel</button>
+        <button class="btn btn-primary" onclick="showClearConfirm()">Mark Available…</button>
+      </div>
+    </div>
+    <div id="clear-step2" hidden>
+      <div class="confirm-warning">
+        <div class="warn-title">Confirm</div>
+        <p>This will mark Locker <strong id="clear-confirm-label"></strong> as available. Confirm it has been cleaned and is ready for a new guest.</p>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="hideClearConfirm()">Go Back</button>
+        <button class="btn btn-primary" onclick="confirmClear()">Yes, Mark Available</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SHORTCUTS MODAL ══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-shortcuts">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('shortcuts')">&times;</button>
+    <h2>Keyboard Shortcuts</h2>
+    <div class="shortcut-row">
+      <span class="shortcut-desc">Focus search</span>
+      <span class="shortcut-key"><kbd>/</kbd></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-desc">Close modal / clear search</span>
+      <span class="shortcut-key"><kbd>Esc</kbd></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-desc">Toggle fullscreen</span>
+      <span class="shortcut-key"><kbd>F</kbd></span>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-desc">Export CSV</span>
+      <span class="shortcut-key"><kbd>E</kbd></span>
+    </div>
+    <div class="form-actions" style="margin-top:18px">
+      <button class="btn btn-secondary" onclick="closeModal('shortcuts')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCRIPT ═════════════════════════════════════════════════════ -->
+<script>
+  const DB_URL = 'https://park-luggage-default-rtdb.firebaseio.com/lockers-app.json';
+  /* ── Config ───────────────────────────────────────────────── */
+  const TOTAL_LOCKERS  = 16;
+  const LONG_STAY_HOURS = 24;
+
+  /* ── State ────────────────────────────────────────────────── */
+  let lockers         = [];
+  let history         = [];
+  let activeId        = null;
+  let activeFilter    = 'all';
+  let hasRenderedOnce = false;
+
+  /* ── Persistence ──────────────────────────────────────────── */
+  function setStatus(msg, color) {
+    const el = document.getElementById('db-status');
+    el.textContent = msg;
+    el.style.color = color || '#5e7a9a';
+  }
+
+  function save() {
+    fetch(DB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lockers, history })
+    }).then(() => setStatus('Saved ✓  ' + new Date().toLocaleTimeString(), '#2ee8a0'))
+      .catch(err => setStatus('Save error: ' + err.message, '#ff6b5b'));
+  }
+
+  async function loadFromDB() {
+    setStatus('Loading…', '#ffb340');
+    try {
+      const res  = await fetch(DB_URL);
+      if (!res.ok) { throw new Error('HTTP ' + res.status); }
+      const data = await res.json();
+      if (data && data.lockers) {
+        lockers = Object.values(data.lockers).slice(0, TOTAL_LOCKERS);
+        for (let i = lockers.length + 1; i <= TOTAL_LOCKERS; i++)
+          lockers.push({ id: i, status: 'available', guest: null, assignedAt: null });
+        history = data.history ? Object.values(data.history) : [];
+      } else {
+        lockers = Array.from({ length: TOTAL_LOCKERS }, (_, i) =>
+          ({ id: i + 1, status: 'available', guest: null, assignedAt: null }));
+        history = [];
+      }
+      hasRenderedOnce = false;
+      renderLockers();
+      setStatus('Database connected ✓', '#2ee8a0');
+    } catch (err) {
+      setStatus('DB Error: ' + err.message, '#ff6b5b');
+      if (lockers.length === 0) {
+        lockers = Array.from({ length: TOTAL_LOCKERS }, (_, i) =>
+          ({ id: i + 1, status: 'available', guest: null, assignedAt: null }));
+        history = [];
+        hasRenderedOnce = false;
+        renderLockers();
+      }
+    }
+  }
+
+  /* ── Helpers ──────────────────────────────────────────────── */
+  function formatDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+      + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function addHistory(type, lockerId, guest) {
+    history.unshift({ type, lockerId, guest: guest ? { ...guest } : null, at: new Date().toISOString() });
+    if (history.length > 200) history.length = 200;
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function isLongStay(locker) {
+    if (locker.status !== 'occupied' || !locker.assignedAt) return false;
+    return (Date.now() - new Date(locker.assignedAt).getTime()) / 3.6e6 >= LONG_STAY_HOURS;
+  }
+
+  /* ── Search ───────────────────────────────────────────────── */
+  function getSearchQuery() {
+    return document.getElementById('search-input').value.trim().toLowerCase();
+  }
+
+  function matchesSearch(locker, query) {
+    if (!query) return true;
+    if (!locker.guest) return false;
+    const g = locker.guest;
+    return g.name.toLowerCase().includes(query)
+      || g.room.toLowerCase().includes(query)
+      || (g.phone && g.phone.toLowerCase().includes(query));
+  }
+
+  function clearSearch() {
+    document.getElementById('search-input').value = '';
+    renderLockers();
+  }
+
+  /* ── Filter ───────────────────────────────────────────────── */
+  function setFilter(f) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(btn =>
+      btn.classList.toggle('active', btn.dataset.f === f)
+    );
+    hasRenderedOnce = false; // allow animation on filter change
+    renderLockers();
+  }
+
+  /* ── Render: Locker Grid ──────────────────────────────────── */
+  function renderLockers() {
+    const grid  = document.getElementById('locker-grid');
+    const query = getSearchQuery();
+
+    // Search hint toggle
+    const hasQuery = !!query;
+    document.getElementById('search-clear-btn').hidden = !hasQuery;
+    document.getElementById('search-hint').hidden = hasQuery;
+
+    // Counts
+    const cnt = {
+      all:       lockers.length,
+      available: lockers.filter(l => l.status === 'available').length,
+      occupied:  lockers.filter(l => l.status === 'occupied').length,
+      attention: lockers.filter(l => l.status === 'attention').length,
+    };
+    document.getElementById('count-available').textContent = cnt.available;
+    document.getElementById('count-occupied').textContent  = cnt.occupied;
+    document.getElementById('count-attention').textContent = cnt.attention;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      const c = btn.querySelector('.f-count');
+      if (c) c.textContent = cnt[btn.dataset.f] ?? cnt.all;
+    });
+
+    // Filter + search
+    const filtered = lockers
+      .filter(l => activeFilter === 'all' || l.status === activeFilter)
+      .filter(l => matchesSearch(l, query));
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="search-no-results">No lockers found${query ? ` matching "<strong>${esc(query)}</strong>"` : ''}.</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map((l, idx) => {
+      const statusLabel = { available: 'Available', occupied: 'Occupied', attention: 'Needs Attention' }[l.status];
+      const badgeClass  = { available: 'badge-available', occupied: 'badge-occupied', attention: 'badge-attention' }[l.status];
+      const longStay    = isLongStay(l);
+      const animStyle   = hasRenderedOnce ? 'animation:none' : `animation-delay:${idx * 0.022}s`;
+
+      let guestHtml = '';
+      if (l.guest) {
+        guestHtml = `<div class="locker-guest">
+          <strong>${esc(l.guest.name)}</strong>
+          Room&nbsp;${esc(l.guest.room)}&ensp;&middot;&ensp;${l.guest.bags}&nbsp;bag${l.guest.bags > 1 ? 's' : ''}
+          ${l.guest.phone  ? `<br>${esc(l.guest.phone)}` : ''}
+          ${l.guest.lockId ? `<br><span class="lock-id-tag">&#128273; ${esc(l.guest.lockId)}</span>` : ''}
+          ${l.guest.notes       ? `<br><span class="notes-text">${esc(l.guest.notes)}</span>` : ''}
+          ${longStay            ? `<br><span class="long-stay-badge">&#9888; Long Stay</span>` : ''}
+          <span class="elapsed-timer" data-at="${l.assignedAt}"></span>
+          <span class="since-label">Since ${formatDate(l.assignedAt)}</span>
+          ${l.guest.receivedBy  ? `<span class="since-label">&#128100; Received: ${esc(l.guest.receivedBy)}</span>` : ''}
+          ${l.guest.deliveredBy ? `<span class="since-label">&#128666; To locker: ${esc(l.guest.deliveredBy)}</span>` : ''}
+        </div>`;
+      }
+
+      let actions = '';
+      if (l.status === 'available') {
+        actions = `<button class="btn btn-primary" onclick="openAssign(${l.id})">Assign</button>`;
+      } else if (l.status === 'occupied') {
+        actions = `<button class="btn btn-danger" onclick="openRelease(${l.id})">Release</button>
+                   <button class="btn btn-ghost"  onclick="openPrintReceipt(${l.id})" title="Print receipt">&#128438;</button>`;
+      } else {
+        actions = `<button class="btn btn-warning" onclick="openClear(${l.id})">Clear</button>`;
+      }
+
+      return `<div class="locker-card ${l.status}${longStay ? ' long-stay' : ''}" style="${animStyle}">
+        <div class="card-top">
+          <div class="locker-number">${l.id}</div>
+          <span class="locker-status ${badgeClass}">${statusLabel}</span>
+        </div>
+        ${guestHtml}
+        <div class="locker-actions">${actions}</div>
+      </div>`;
+    }).join('');
+
+    hasRenderedOnce = true;
+    updateTimers();
+  }
+
+  /* ── Render: History ──────────────────────────────────────── */
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    if (!history.length) { list.innerHTML = '<p class="history-empty">No history yet.</p>'; return; }
+    const icons     = { assigned: '🔒', released: '🔓', cleared: '✅' };
+    const iconClass = { assigned: 'icon-assigned', released: 'icon-released', cleared: 'icon-attention' };
+    const labels    = { assigned: 'Assigned', released: 'Released', cleared: 'Cleared' };
+    list.innerHTML = history.map(h => {
+      const g = h.guest;
+      const detail = g
+        ? `${esc(g.name)} &bull; Room ${esc(g.room)}${g.bags ? ' &bull; ' + g.bags + ' bag' + (g.bags > 1 ? 's' : '') : ''}${g.lockId ? ' &bull; Lock: ' + esc(g.lockId) : ''}${g.notes ? ' &bull; ' + esc(g.notes) : ''}`
+        : 'No guest info';
+      return `<div class="history-item">
+        <div class="history-icon ${iconClass[h.type]}">${icons[h.type]}</div>
+        <div class="history-body">
+          <strong>Locker #${h.lockerId} — ${labels[h.type]}</strong>
+          <p>${detail}</p>
+        </div>
+        <div class="history-time">${formatDate(h.at)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ── Tabs ─────────────────────────────────────────────────── */
+  function showTab(name) {
+    document.getElementById('tab-lockers').hidden = name !== 'lockers';
+    document.getElementById('tab-history').hidden = name !== 'history';
+    document.getElementById('tab-stats').hidden   = name !== 'stats';
+    document.querySelectorAll('.nav-tabs button').forEach((btn, i) =>
+      btn.classList.toggle('active', ['lockers','history','stats'][i] === name)
+    );
+    if (name === 'history') renderHistory();
+    if (name === 'stats')   renderStats();
+  }
+
+  /* ── Stats ────────────────────────────────────────────────── */
+  function renderStats() {
+    const today      = new Date().toDateString();
+    const todayIn    = history.filter(h => h.type === 'assigned' && new Date(h.at).toDateString() === today);
+    const todayOut   = history.filter(h => h.type === 'released' && new Date(h.at).toDateString() === today);
+    const occupied   = lockers.filter(l => l.status === 'occupied');
+    const occupancyPct = Math.round(occupied.length / TOTAL_LOCKERS * 100);
+
+    const avgMs = occupied.length
+      ? occupied.reduce((s, l) => s + (Date.now() - new Date(l.assignedAt).getTime()), 0) / occupied.length
+      : 0;
+    const avgH = Math.floor(avgMs / 3.6e6);
+    const avgM = Math.floor((avgMs % 3.6e6) / 60000);
+
+    const empCount = {};
+    history.forEach(h => {
+      if (h.guest && h.guest.receivedBy) {
+        empCount[h.guest.receivedBy] = (empCount[h.guest.receivedBy] || 0) + 1;
+      }
+    });
+    const topEmp = Object.entries(empCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">Today's Check-ins</div>
+        <div class="stat-value">${todayIn.length}</div>
+        <div class="stat-sub">${todayOut.length} checked out today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Current Occupancy</div>
+        <div class="stat-value">${occupancyPct}%</div>
+        <div class="stat-sub">${occupied.length} of ${TOTAL_LOCKERS} lockers in use</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg. Stay Time</div>
+        <div class="stat-value">${avgH}h ${avgM}m</div>
+        <div class="stat-sub">Current occupants</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Top Staff (All Time)</div>
+        <div class="stat-sub" style="margin-bottom:4px">By check-ins received</div>
+        <div class="stat-list">
+          ${topEmp.length ? topEmp.map(([name, count]) =>
+            `<div class="stat-row"><strong>${esc(name)}</strong><span>${count}</span></div>`
+          ).join('') : '<div class="stat-row">No data yet</div>'}
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total History</div>
+        <div class="stat-value">${history.length}</div>
+        <div class="stat-sub">All-time log entries</div>
+      </div>
+    `;
+  }
+
+  /* ── Modals ───────────────────────────────────────────────── */
+  function openModal(name) {
+    document.getElementById('modal-' + name).classList.add('open');
+  }
+  function closeModal(name) {
+    document.getElementById('modal-' + name).classList.remove('open');
+  }
+
+  function openAssign(id) {
+    activeId = id;
+    document.getElementById('assign-locker-label').textContent = '#' + id;
+    ['field-name','field-room','field-phone','field-bags','field-lockid','field-notes','field-received-by','field-delivered-by']
+      .forEach(f => document.getElementById(f).value = '');
+    document.getElementById('assign-error').textContent = '';
+    openModal('assign');
+    setTimeout(() => document.getElementById('field-name').focus(), 50);
+  }
+
+  function openRelease(id) {
+    activeId = id;
+    const locker = lockers.find(l => l.id === id);
+    const g = locker.guest;
+    document.getElementById('release-locker-label').textContent = '#' + id;
+    document.getElementById('release-guest-info').innerHTML =
+      `<strong>${esc(g.name)}</strong><br>Room ${esc(g.room)} &bull; ${g.bags} bag${g.bags > 1 ? 's' : ''}`
+      + (g.phone  ? '<br>' + esc(g.phone) : '')
+      + (g.lockId ? '<br>Lock: <strong>' + esc(g.lockId) + '</strong>' : '')
+      + (g.notes  ? '<br><em>' + esc(g.notes) + '</em>' : '')
+      + `<br><span style="font-size:.75rem;color:var(--text-dim)">Checked in: ${formatDate(locker.assignedAt)}</span>`;
+    document.getElementById('release-next-status').value = 'available';
+    document.getElementById('release-step1').hidden = false;
+    document.getElementById('release-step2').hidden = true;
+    openModal('release');
+  }
+
+  function showReleaseConfirm() {
+    const locker     = lockers.find(l => l.id === activeId);
+    const g          = locker.guest;
+    const nextStatus = document.getElementById('release-next-status').value;
+    const nextLabel  = nextStatus === 'available' ? 'Available' : 'Needs Attention';
+    document.getElementById('release-confirm-text').innerHTML =
+      `You are about to release Locker <strong>#${activeId}</strong> for <strong>${esc(g.name)}</strong> (Room&nbsp;${esc(g.room)}). `
+      + `It will be marked as <strong>${nextLabel}</strong>. This cannot be undone.`;
+    document.getElementById('release-step1').hidden = true;
+    document.getElementById('release-step2').hidden = false;
+  }
+
+  function hideReleaseConfirm() {
+    document.getElementById('release-step1').hidden = false;
+    document.getElementById('release-step2').hidden = true;
+  }
+
+  function openClear(id) {
+    activeId = id;
+    document.getElementById('clear-locker-label').textContent  = '#' + id;
+    document.getElementById('clear-confirm-label').textContent = '#' + id;
+    document.getElementById('clear-step1').hidden = false;
+    document.getElementById('clear-step2').hidden = true;
+    openModal('clear');
+  }
+
+  function showClearConfirm() {
+    document.getElementById('clear-step1').hidden = true;
+    document.getElementById('clear-step2').hidden = false;
+  }
+
+  function hideClearConfirm() {
+    document.getElementById('clear-step1').hidden = false;
+    document.getElementById('clear-step2').hidden = true;
+  }
+
+  // Close on backdrop click (not for assign modal to prevent losing filled data)
+  document.querySelectorAll('.modal-overlay:not(#modal-assign)').forEach(overlay =>
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); })
+  );
+
+  /* ── Actions ──────────────────────────────────────────────── */
+  function confirmAssign() {
+    const name        = document.getElementById('field-name').value.trim();
+    const room        = document.getElementById('field-room').value.trim();
+    const phone       = document.getElementById('field-phone').value.trim();
+    const bags        = parseInt(document.getElementById('field-bags').value, 10);
+    const lockId      = document.getElementById('field-lockid').value.trim();
+    const notes       = document.getElementById('field-notes').value.trim();
+    const receivedBy  = document.getElementById('field-received-by').value.trim();
+    const deliveredBy = document.getElementById('field-delivered-by').value.trim();
+    const errEl       = document.getElementById('assign-error');
+    if (!name || !room || !bags || bags < 1 || !lockId) {
+      errEl.textContent = 'Please fill in guest name, room number, number of bags, and lock ID.';
+      return;
+    }
+    const locker      = lockers.find(l => l.id === activeId);
+    locker.status     = 'occupied';
+    locker.guest      = { name, room, phone, bags, lockId, notes, receivedBy, deliveredBy };
+    locker.assignedAt = new Date().toISOString();
+    addHistory('assigned', activeId, locker.guest);
+    save(); hasRenderedOnce = false; renderLockers(); closeModal('assign');
+  }
+
+  function confirmRelease() {
+    const locker     = lockers.find(l => l.id === activeId);
+    const nextStatus = document.getElementById('release-next-status').value;
+    addHistory('released', activeId, locker.guest);
+    locker.status = nextStatus; locker.guest = null; locker.assignedAt = null;
+    save(); hasRenderedOnce = false; renderLockers(); closeModal('release');
+  }
+
+  function confirmClear() {
+    const locker  = lockers.find(l => l.id === activeId);
+    addHistory('cleared', activeId, null);
+    locker.status = 'available';
+    save(); hasRenderedOnce = false; renderLockers(); closeModal('clear');
+  }
+
+  /* ── Export CSV ───────────────────────────────────────────── */
+  function exportCSV() {
+    const occupied = lockers.filter(l => l.status === 'occupied');
+    if (!occupied.length) { alert('No occupied lockers to export.'); return; }
+    const headers = ['Locker','Guest Name','Room','Phone','Bags','Lock ID','Notes','Check-in','Long Stay','Received By','Delivered By'];
+    const rows = occupied.map(l => [
+      l.id, l.guest.name, l.guest.room, l.guest.phone || '',
+      l.guest.bags, l.guest.lockId, l.guest.notes || '',
+      formatDate(l.assignedAt), isLongStay(l) ? 'Yes' : 'No',
+      l.guest.receivedBy || '', l.guest.deliveredBy || ''
+    ]);
+    const csv = [headers, ...rows]
+      .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+      .join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `72park-luggage-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+
+  /* ── Fullscreen ───────────────────────────────────────────── */
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  }
+  document.addEventListener('fullscreenchange', () => {
+    document.getElementById('fs-icon').textContent = document.fullscreenElement ? '⊠' : '⛶';
+  });
+
+  /* ── Print Receipt ────────────────────────────────────────── */
+  function makeBarcodesSVG(text) {
+    const W = 200, H = 45, str = String(text);
+    let widths = [1, 2, 1];
+    for (let i = 0; i < str.length; i++) {
+      const c = str.charCodeAt(i);
+      for (let b = 7; b >= 0; b--) widths.push(((c >> b) & 1) ? 3 : 1);
+      widths.push(1);
+    }
+    widths.push(1, 2, 1);
+    const total = widths.reduce((a, v) => a + v, 0);
+    const scale = W / total;
+    let x = 0, rects = '';
+    widths.forEach((w, i) => {
+      if (i % 2 === 0) rects += `<rect x="${(x*scale).toFixed(1)}" y="0" width="${Math.max(.4,(w*scale-.3)).toFixed(1)}" height="${H}" fill="#000"/>`;
+      x += w;
+    });
+    return `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto">${rects}</svg>`;
+  }
+
+  function openPrintReceipt(id) {
+    const locker = lockers.find(l => l.id === id);
+    const g      = locker.guest;
+    const bcData = `L${locker.id}-${g.lockId}-R${g.room}`;
+    const barcode = makeBarcodesSVG(bcData);
+    const w = window.open('', '_blank', 'width=420,height=660,menubar=no,toolbar=no,location=no');
+    if (!w) { alert('Please allow pop-ups for this page to print receipts.'); return; }
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Receipt · Locker #${locker.id}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Courier New',monospace;width:80mm;margin:0 auto;padding:8mm 6mm;font-size:11px;color:#000;background:#fff}
+  .c{text-align:center}
+  .n72{font-size:42px;font-weight:900;letter-spacing:5px;font-family:Arial Black,sans-serif;line-height:1}
+  .npark{font-size:13px;letter-spacing:9px;margin-top:2px}
+  .ncity{font-size:8px;letter-spacing:4px;color:#666;margin-top:2px}
+  .ntitle{font-size:9px;letter-spacing:3px;color:#888;margin:5px 0 0;text-transform:uppercase}
+  hr{border:none;border-top:1px dashed #bbb;margin:8px 0}
+  .lnum{font-size:52px;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;line-height:1.1}
+  .lid{font-size:13px;letter-spacing:3px;color:#444;margin:3px 0}
+  table{width:100%;border-collapse:collapse;margin:4px 0}
+  td{padding:3px 0;vertical-align:top;font-size:11px}
+  td:first-child{width:40%;color:#666}
+  td:last-child{font-weight:600}
+  .bc{margin:8px 0 3px}
+  .bctext{font-size:8px;letter-spacing:2px;color:#888;text-align:center;margin-top:3px}
+  .footer{font-size:10px;text-align:center;color:#444;line-height:1.7;margin-top:4px}
+  .small{font-size:8px;color:#aaa;margin-top:4px}
+  @media print{body{padding:3mm}@page{margin:0;size:80mm auto}}
+</style></head><body>
+<div class="c">
+  <div class="n72">72</div>
+  <div class="npark">PARK</div>
+  <div class="ncity">MIAMI BEACH</div>
+  <div class="ntitle">Luggage Storage</div>
+</div>
+<hr>
+<div class="c">
+  <div style="font-size:9px;letter-spacing:2px;color:#888">LOCKER</div>
+  <div class="lnum">#${locker.id}</div>
+  <div class="lid">LOCK: ${esc(g.lockId)}</div>
+</div>
+<hr>
+<table>
+  <tr><td>Guest:</td><td>${esc(g.name)}</td></tr>
+  <tr><td>Room:</td><td>${esc(g.room)}</td></tr>
+  <tr><td>Bags:</td><td>${g.bags}</td></tr>
+  <tr><td>Phone:</td><td>${g.phone ? esc(g.phone) : '—'}</td></tr>
+  <tr><td>Check-in:</td><td>${formatDate(locker.assignedAt)}</td></tr>
+  ${g.notes ? `<tr><td>Notes:</td><td style="font-style:italic">${esc(g.notes)}</td></tr>` : ''}
+</table>
+<hr>
+<div class="bc">${barcode}</div>
+<div class="bctext">${bcData}</div>
+<hr>
+<div class="footer">
+  Please keep this receipt.<br>Present to collect your luggage.
+  <div class="small">72 Park Miami Beach · Luggage Storage</div>
+</div>
+<script>window.onload=()=>{setTimeout(()=>{window.print();},350)};<\/script>
+</body></html>`);
+    w.document.close();
+  }
+
+  /* ── Keyboard shortcuts ───────────────────────────────────── */
+  document.addEventListener('keydown', e => {
+    const inInput  = ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+    const modalOpen = !!document.querySelector('.modal-overlay.open');
+
+    if (e.key === 'Escape') {
+      const open = document.querySelector('.modal-overlay.open');
+      if (open) { open.classList.remove('open'); return; }
+      if (getSearchQuery()) { clearSearch(); }
+      return;
+    }
+    if (inInput || modalOpen) return;
+    if (e.key === '/') {
+      e.preventDefault();
+      if (document.getElementById('tab-lockers').hidden) showTab('lockers');
+      document.getElementById('search-input').focus();
+      document.getElementById('search-input').select();
+    }
+    if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+    if (e.key === 'e' || e.key === 'E') exportCSV();
+  });
+
+  /* ── Elapsed timers ──────────────────────────────────────── */
+  function formatElapsed(iso) {
+    const totalMins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+    const days  = Math.floor(totalMins / 1440);
+    const hours = Math.floor((totalMins % 1440) / 60);
+    const mins  = totalMins % 60;
+    if (days > 0)  return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h ${mins}m`;
+    return `${Math.max(1, mins)}m`;
+  }
+
+  function updateTimers() {
+    document.querySelectorAll('.elapsed-timer[data-at]').forEach(el => {
+      const hours = (Date.now() - new Date(el.dataset.at).getTime()) / 3.6e6;
+      el.textContent = '⏱ ' + formatElapsed(el.dataset.at);
+      el.className = 'elapsed-timer ' + (
+        hours >= LONG_STAY_HOURS     ? 'elapsed-danger'  :
+        hours >= LONG_STAY_HOURS / 2 ? 'elapsed-warning' :
+                                       'elapsed-ok'
+      );
+    });
+  }
+
+  /* ── Clock ────────────────────────────────────────────────── */
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('time-display').textContent =
+      now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('date-display').textContent =
+      now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    updateTimers();
+  }
+
+  /* ── Password ────────────────────────────────────────────── */
+  const PASSWORD = '2026';
+  function checkPassword(force) {
+    const val = document.getElementById('lock-input').value;
+    if (val === PASSWORD || force && val === PASSWORD) {
+      sessionStorage.setItem('hl_auth', '1');
+      document.getElementById('lock-screen').style.display = 'none';
+    } else if (force || val.length >= PASSWORD.length) {
+      document.getElementById('lock-error').textContent = 'Incorrect password';
+      document.getElementById('lock-input').value = '';
+    }
+  }
+  if (sessionStorage.getItem('hl_auth') === '1') {
+    document.getElementById('lock-screen').style.display = 'none';
+  }
+
+  /* ── Init ─────────────────────────────────────────────────── */
+  updateClock();
+  setInterval(updateClock, 1000);
+  loadFromDB();
+  setInterval(loadFromDB, 15000);
+
+
+</script>
+</body>
+</html>
