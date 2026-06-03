@@ -383,6 +383,41 @@
     .stat-row:last-child { border-bottom: none; }
     .stat-row strong { color: var(--text); }
 
+    /* ── Guest Checkout ─────────────────────────────────────── */
+    #guest-checkout {
+      position: fixed; inset: 0; z-index: 9997;
+      background: var(--bg-deep);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; padding: 30px; text-align: center; gap: 8px;
+    }
+    #guest-checkout.active { display: flex; }
+    .guest-co-logo { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--gold); letter-spacing: 4px; text-shadow: 0 0 40px rgba(201,169,110,.35); line-height: 1; }
+    .guest-co-sub  { font-size: .65rem; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 24px; }
+    .guest-co-card {
+      background: var(--bg-surface); border: 1px solid var(--gold-border);
+      border-radius: 16px; padding: 32px 36px; max-width: 400px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+    .guest-co-locker-label { font-size: .62rem; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+    .guest-co-locker-num { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; color: var(--gold); line-height: 1; margin-bottom: 4px; text-shadow: 0 0 30px rgba(201,169,110,.3); }
+    .guest-co-msg { font-size: .88rem; color: var(--text-muted); line-height: 1.75; margin: 16px 0 24px; }
+    .guest-co-msg strong { color: var(--text); }
+    .guest-co-btn { width: 100%; padding: 16px; font-size: .95rem; letter-spacing: .5px; border-radius: 10px; }
+    .guest-co-done { text-align: center; }
+    .done-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .guest-co-done h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--emerald); margin-bottom: 10px; }
+    .guest-co-done p { font-size: .85rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── Pickup Requested ────────────────────────────────────── */
+    .pickup-req-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,179,64,.14); color: var(--amber);
+      font-size: .63rem; font-weight: 700; padding: 3px 10px;
+      border-radius: 99px; text-transform: uppercase; letter-spacing: .8px;
+      animation: pulse 1.4s ease-in-out infinite; margin-top: 4px;
+    }
+    .locker-card.pickup-req { border-color: rgba(255,179,64,.4) !important; box-shadow: 0 0 0 1px rgba(255,179,64,.15); }
+
     /* ── Utilities ──────────────────────────────────────────── */
     [hidden] { display: none !important; }
 
@@ -400,6 +435,33 @@
   </style>
 </head>
 <body>
+
+<!-- ══ GUEST CHECKOUT ════════════════════════════════════════════════ -->
+<div id="guest-checkout">
+  <div class="guest-co-logo">72</div>
+  <div class="guest-co-sub">Luggage Storage · Miami Beach</div>
+  <div class="guest-co-card">
+    <div id="guest-co-loading" style="color:var(--text-muted);font-size:.9rem;padding:20px 0">Loading…</div>
+    <div id="guest-co-content" hidden>
+      <div class="guest-co-locker-label">Your Locker</div>
+      <div class="guest-co-locker-num" id="guest-co-locker-num"></div>
+      <div class="guest-co-msg">
+        Hi <strong id="guest-co-name"></strong>, your luggage is safely stored at <strong>72 Park Miami Beach</strong>.<br><br>
+        Tap the button below to request pickup.<br>
+        <strong>Allow approximately 10 minutes</strong> for your bags to be brought to you.
+      </div>
+      <div id="guest-co-action">
+        <button class="btn btn-primary guest-co-btn" onclick="guestRequestPickup()">&#129523; Request My Luggage</button>
+      </div>
+      <div id="guest-co-done" class="guest-co-done" hidden>
+        <div class="done-icon">&#9989;</div>
+        <h3>Request Sent!</h3>
+        <p>Our team has been notified. Your luggage will be ready in approximately <strong>10 minutes</strong>.<br>Please proceed to the front desk.</p>
+      </div>
+    </div>
+    <div id="guest-co-error" hidden style="color:var(--coral);font-size:.85rem;padding:20px 0"></div>
+  </div>
+</div>
 
 <!-- ══ LOCK SCREEN ══════════════════════════════════════════════════ -->
 <div id="lock-screen">
@@ -808,6 +870,7 @@
           ${l.guest.lockId ? `<br><span class="lock-id-tag">&#128273; ${esc(l.guest.lockId)}</span>` : ''}
           ${l.guest.notes       ? `<br><span class="notes-text">${esc(l.guest.notes)}</span>` : ''}
           ${longStay            ? `<br><span class="long-stay-badge">&#9888; Long Stay</span>` : ''}
+          ${l.pickupRequested  ? `<br><span class="pickup-req-badge">&#128276; Pickup Requested</span>` : ''}
           <span class="elapsed-timer" data-at="${l.assignedAt}"></span>
           <span class="since-label">Since ${formatDate(l.assignedAt)}</span>
           ${l.guest.receivedBy  ? `<span class="since-label">&#128100; Received: ${esc(l.guest.receivedBy)}</span>` : ''}
@@ -825,7 +888,7 @@
         actions = `<button class="btn btn-warning" onclick="openClear(${l.id})">Clear</button>`;
       }
 
-      return `<div class="locker-card ${l.status}${longStay ? ' long-stay' : ''}" style="${animStyle}">
+      return `<div class="locker-card ${l.status}${longStay ? ' long-stay' : ''}${l.pickupRequested ? ' pickup-req' : ''}" style="${animStyle}">
         <div class="card-top">
           <div class="locker-number">${l.id}</div>
           <span class="locker-status ${badgeClass}">${statusLabel}</span>
@@ -1021,9 +1084,13 @@
       return;
     }
     const locker      = lockers.find(l => l.id === activeId);
-    locker.status     = 'occupied';
-    locker.guest      = { name, room, phone, bags, lockId, notes, receivedBy, deliveredBy };
-    locker.assignedAt = new Date().toISOString();
+    const checkoutToken = Math.random().toString(36).slice(2, 10).toUpperCase();
+    locker.status        = 'occupied';
+    locker.guest         = { name, room, phone, bags, lockId, notes, receivedBy, deliveredBy };
+    locker.assignedAt    = new Date().toISOString();
+    locker.checkoutToken = checkoutToken;
+    locker.pickupRequested = false;
+    if (phone) sendSMS(phone, locker.id, name, checkoutToken);
     addHistory('assigned', activeId, locker.guest);
     save(); hasRenderedOnce = false; renderLockers(); closeModal('assign');
   }
@@ -1033,13 +1100,14 @@
     const nextStatus = document.getElementById('release-next-status').value;
     addHistory('released', activeId, locker.guest);
     locker.status = nextStatus; locker.guest = null; locker.assignedAt = null;
+    locker.checkoutToken = null; locker.pickupRequested = false;
     save(); hasRenderedOnce = false; renderLockers(); closeModal('release');
   }
 
   function confirmClear() {
     const locker  = lockers.find(l => l.id === activeId);
     addHistory('cleared', activeId, null);
-    locker.status = 'available';
+    locker.status = 'available'; locker.checkoutToken = null; locker.pickupRequested = false;
     save(); hasRenderedOnce = false; renderLockers(); closeModal('clear');
   }
 
@@ -1233,11 +1301,96 @@
     document.getElementById('lock-screen').style.display = 'none';
   }
 
+  /* ── SMS ──────────────────────────────────────────────────── */
+  async function sendSMS(phone, lockerId, guestName, checkoutToken) {
+    try {
+      await fetch('/api/send-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: phone, lockerNumber: lockerId, guestName, checkoutToken })
+      });
+    } catch (e) {
+      console.error('SMS failed:', e);
+    }
+  }
+
+  /* ── Guest Checkout ───────────────────────────────────────── */
+  let guestLockerId = null;
+
+  async function initGuestCheckout(lockerId, key) {
+    document.getElementById('guest-checkout').classList.add('active');
+    document.getElementById('lock-screen').style.display = 'none';
+    try {
+      const res  = await fetch(DB_URL);
+      const data = await res.json();
+      if (!data || !data.lockers) throw new Error('Not found');
+      const list   = Object.values(data.lockers);
+      const locker = list.find(l => l.id === lockerId);
+      if (!locker || locker.checkoutToken !== key) {
+        showGuestError('This link is invalid or has already been used.');
+        return;
+      }
+      if (locker.status !== 'occupied') {
+        showGuestError('Your luggage has already been released. Please see the front desk.');
+        return;
+      }
+      guestLockerId = lockerId;
+      document.getElementById('guest-co-loading').hidden = true;
+      document.getElementById('guest-co-content').hidden = false;
+      document.getElementById('guest-co-locker-num').textContent = '#' + lockerId;
+      document.getElementById('guest-co-name').textContent = locker.guest ? locker.guest.name.split(' ')[0] : 'Guest';
+      if (locker.pickupRequested) {
+        document.getElementById('guest-co-action').hidden = true;
+        document.getElementById('guest-co-done').hidden = false;
+      }
+    } catch (err) {
+      showGuestError('Unable to load your locker info. Please try again.');
+    }
+  }
+
+  function showGuestError(msg) {
+    document.getElementById('guest-co-loading').hidden = true;
+    const errEl = document.getElementById('guest-co-error');
+    errEl.hidden = false;
+    errEl.textContent = msg;
+  }
+
+  async function guestRequestPickup() {
+    if (!guestLockerId) return;
+    const btn = document.querySelector('.guest-co-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      const res  = await fetch(DB_URL);
+      const data = await res.json();
+      const list   = Object.values(data.lockers);
+      const locker = list.find(l => l.id === guestLockerId);
+      locker.pickupRequested = true;
+      await fetch(DB_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lockers: list, history: data.history || [] })
+      });
+      document.getElementById('guest-co-action').hidden = true;
+      document.getElementById('guest-co-done').hidden = false;
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = '&#129523; Request My Luggage';
+    }
+  }
+
   /* ── Init ─────────────────────────────────────────────────── */
-  updateClock();
-  setInterval(updateClock, 1000);
-  loadFromDB();
-  setInterval(loadFromDB, 15000);
+  const _p   = new URLSearchParams(window.location.search);
+  const _cId = parseInt(_p.get('checkout'));
+  const _cKey = _p.get('key');
+  if (_cId && _cKey) {
+    initGuestCheckout(_cId, _cKey);
+  } else {
+    updateClock();
+    setInterval(updateClock, 1000);
+    loadFromDB();
+    setInterval(loadFromDB, 15000);
+  }
 
 
 </script>
