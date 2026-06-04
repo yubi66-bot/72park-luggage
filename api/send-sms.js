@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -15,13 +14,13 @@ export default async function handler(req, res) {
   const fromNumber = process.env.TWILIO_PHONE_NUMBER;
 
   const checkoutUrl = `https://72park-luggage.vercel.app/?checkout=${lockerNumber}&key=${checkoutToken}`;
-  const msgBody = `72 Park Miami Beach – Luggage Storage\nHi ${guestName || 'there'}, your bags are in Locker #${lockerNumber}.\nRequest pickup (ready in ~10 min):\n${checkoutUrl}`;
+  const msgBody = `Locker #${lockerNumber} @ 72 Park. Tap to request pickup:\n${checkoutUrl}`;
 
   const credentials = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
 
   try {
     const response = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+      `https://api.twilio.com/2010-04-01/Accjson`,
       {
         method: 'POST',
         headers: {
