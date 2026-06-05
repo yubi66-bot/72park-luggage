@@ -345,6 +345,8 @@
     .phone-input-wrap #field-phone-num { border-radius: 0 8px 8px 0; flex: 1; }
     .form-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
     .error-msg { color: var(--coral); font-size: .77rem; margin-top: 8px; letter-spacing: .2px; }
+    .pickup-toast { position: fixed; bottom: 24px; right: 24px; background: var(--gold); color: #0a1828; padding: 14px 20px; border-radius: 12px; font-size: .9rem; font-weight: 600; box-shadow: 0 8px 32px rgba(0,0,0,.45); transform: translateY(90px); opacity: 0; transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s; z-index: 9999; pointer-events: none; max-width: 280px; line-height: 1.5; }
+    .pickup-toast.show { transform: translateY(0); opacity: 1; }
     .optional-label { font-weight: 400; opacity: .55; font-size: .68rem; letter-spacing: 0; text-transform: none; }
 
     /* ── Shortcuts modal ────────────────────────────────────── */
@@ -803,6 +805,30 @@
       .catch(err => setStatus('Save error: ' + err.message, '#ff6b5b'));
   }
 
+  let _prevPickupIds = null;
+
+  function notifyPickup(locker) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [880, 1100, 1320].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.13);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.13 + 0.12);
+        osc.start(ctx.currentTime + i * 0.13);
+        osc.stop(ctx.currentTime + i * 0.13 + 0.15);
+      });
+    } catch(e) {}
+    const toast = document.createElement('div');
+    toast.className = 'pickup-toast';
+    toast.innerHTML = `<strong>&#128276; Pickup Requested</strong><br>Locker #${locker.id} &middot; ${esc(locker.guest?.name || 'Guest')}`;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 7000);
+  }
+
   async function loadFromDB() {
     setStatus('Loading…', '#ffb340');
     try {
@@ -810,9 +836,14 @@
       if (!res.ok) { throw new Error('HTTP ' + res.status); }
       const data = await res.json();
       if (data && data.lockers) {
-        lockers = Object.values(data.lockers).slice(0, TOTAL_LOCKERS);
-        for (let i = lockers.length + 1; i <= TOTAL_LOCKERS; i++)
-          lockers.push({ id: i, status: 'available', guest: null, assignedAt: null });
+        const newLockers = Object.values(data.lockers).slice(0, TOTAL_LOCKERS);
+        for (let i = newLockers.length + 1; i <= TOTAL_LOCKERS; i++)
+          newLockers.push({ id: i, status: 'available', guest: null, assignedAt: null });
+        if (_prevPickupIds !== null) {
+          newLockers.forEach(l => { if (l.pickupRequested && !_prevPickupIds.has(l.id)) notifyPickup(l); });
+        }
+        _prevPickupIds = new Set(newLockers.filter(l => l.pickupRequested).map(l => l.id));
+        lockers = newLockers;
         history = data.history ? Object.values(data.history) : [];
       } else {
         lockers = Array.from({ length: TOTAL_LOCKERS }, (_, i) =>
